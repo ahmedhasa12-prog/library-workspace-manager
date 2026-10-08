@@ -28,7 +28,7 @@ jobs:
       run: dir
       
     - name: Check for package-lock.json
-      run: if exist package-lock.json (echo package-lock.json found) else (echo package-lock.json NOT found)
+      run: powershell -command "if (Test-Path 'package-lock.json') { Write-Host 'package-lock.json found' } else { Write-Host 'package-lock.json NOT found' }"
       
     - name: Check package.json
       run: type package.json
