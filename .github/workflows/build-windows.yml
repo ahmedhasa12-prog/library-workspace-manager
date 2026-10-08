@@ -5,62 +5,68 @@ on:
     branches: [ main ]
   workflow_dispatch:  # Allows manual triggering
 
+# Avoid stacking duplicate builds when several commits land in a row.
+concurrency:
+  group: build-windows-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: windows-latest  # Uses Windows Server 2022 with Desktop Experience
-    
+    runs-on: windows-latest  # Windows Server 2022 with Desktop Experience
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'  # LTS version
-        # Cache disabled to avoid lock file issues
-        
+        # Cache disabled: this repo has no committed lock file.
+
     - name: Check Node and npm versions
       run: |
-        echo "Node version: $(node -v)"
-        echo "npm version: $(npm -v)"
-        
-    - name: List files
-      run: dir
-      
-    - name: Check for package-lock.json
-      run: powershell -command "if (Test-Path 'package-lock.json') { Write-Host 'package-lock.json found' } else { Write-Host 'package-lock.json NOT found' }"
-      
-    - name: Check package.json
-      run: type package.json
-      
+        node -v
+        npm -v
+
     - name: Install dependencies
       run: npm install
-      
-    - name: Rebuild native modules (if needed)
-      run: npm rebuild better-sqlite3 || echo "Rebuild failed or not needed"
-      
+
+    - name: Rebuild native modules
+      run: npm rebuild better-sqlite3
+
+    # --publish never is baked into the dist:win script so electron-builder
+    # does not try to open a GitHub release (which requires GH_TOKEN).
+    # GH_TOKEN is provided anyway as a safety net.
     - name: Build Windows installer
       run: npm run dist:win
-      
-    - name: Check if build succeeded
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify installer was produced
+      shell: pwsh
       run: |
-        echo Checking dist-electron folder:
-        if exist dist-electron (
-          dir dist-electron
-        ) else (
-          echo dist-electron folder not found
-        )
-        echo Looking for installer:
-        for /f %%I in ('dir dist-electron\*.exe /b 2^>nul') do (
-          echo Found installer: %%I
-          goto :found
-        )
-        echo No exe files found
-        :found
-        
+        if (-not (Test-Path 'dist-electron')) {
+          Write-Error "dist-electron folder was not created"
+          exit 1
+        }
+        Write-Host "Contents of dist-electron:"
+        Get-ChildItem -Path 'dist-electron' -Recurse -File |
+          Select-Object -ExpandProperty FullName
+
+        $exe = Get-ChildItem -Path 'dist-electron' -Filter '*.exe' -File -ErrorAction SilentlyContinue
+        if (-not $exe) {
+          Write-Error "No installer (.exe) found in dist-electron"
+          exit 1
+        }
+        Write-Host "Installer found: $($exe.Name)"
+
     - name: Upload installer artifact
       uses: actions/upload-artifact@v4
       with:
         name: library-workspace-manager-installer
-        path: dist-electron/**/Library Workspace Manager Setup *.exe
+        if-no-files-found: error
+        path: |
+          dist-electron/*.exe
+          dist-electron/*.blockmap
         retention-days: 30  # Keep artifacts for 30 days

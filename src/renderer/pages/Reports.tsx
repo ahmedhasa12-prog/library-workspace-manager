@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { electronAPI } from '../../main/preload';
+import toast from 'react-hot-toast';
 import { Button } from '../components/Button';
-import { utils } from '../../main/preload';
+
+const formatDate = (value: string) => {
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? value : d.toLocaleDateString('en-GB');
+};
 
 const Reports: React.FC = () => {
   const [sessions, setSessions] = useState<Array<any>>([]);
   const [customers, setCustomers] = useState<Array<any>>([]);
+  const [currency, setCurrency] = useState('EGP');
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
@@ -16,15 +21,17 @@ const Reports: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [sessionsData, customersData] = await Promise.all([
-        electronAPI.getSessions(),
-        electronAPI.getCustomers()
+      const [sessionsData, customersData, settingsData] = await Promise.all([
+        window.api.sessions.history(500),
+        window.api.customers.list(),
+        window.api.settings.get(),
       ]);
       setSessions(sessionsData);
       setCustomers(customersData);
+      setCurrency(settingsData.currency || 'EGP');
     } catch (error) {
       console.error('Failed to load reports data:', error);
-      alert('Failed to load reports data');
+      toast.error('Failed to load reports data');
     } finally {
       setLoading(false);
     }
@@ -90,7 +97,7 @@ const Reports: React.FC = () => {
           <div className="summary-cards">
             <div className="summary-card">
               <h3>Total Revenue</h3>
-              <p className="summary-value">${calculateStats().totalRevenue.toFixed(2)}</p>
+              <p className="summary-value">{calculateStats().totalRevenue.toFixed(2)} {currency}</p>
             </div>
             <div className="summary-card">
               <h3>Total Sessions</h3>
@@ -102,7 +109,7 @@ const Reports: React.FC = () => {
             </div>
             <div className="summary-card">
               <h3>Avg. Session Value</h3>
-              <p className="summary-value">${calculateStats().avgSessionValue.toFixed(2)}</p>
+              <p className="summary-value">{calculateStats().avgSessionValue.toFixed(2)} {currency}</p>
             </div>
           </div>
           
@@ -134,12 +141,12 @@ const Reports: React.FC = () => {
                 {filteredSessions.slice(0, 10).map(session => (
                   <tr key={session.id}>
                     <td>{session.customer_name}</td>
-                    <td>{utils.formatDate(session.check_in_time)}</td>
+                    <td>{formatDate(session.check_in_time)}</td>
                     <td>
                       {session.duration_minutes} min 
                       ({Math.round(session.duration_minutes / 60)}h)
                     </td>
-                    <td>${(session.total_amount || 0).toFixed(2)}</td>
+                    <td>{(session.total_amount || 0).toFixed(2)} {currency}</td>
                     <td>
                       <span className={`status-badge ${session.status}`}>
                         {session.status === 'active' ? 'Active' : 'Completed'}

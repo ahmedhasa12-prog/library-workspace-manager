@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { electronAPI } from '../../main/preload';
+import toast from 'react-hot-toast';
 import { Button } from '../components/Button';
 
 const Settings: React.FC = () => {
@@ -15,11 +15,11 @@ const Settings: React.FC = () => {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      const data = await electronAPI.getSettings();
+      const data = await window.api.settings.get();
       setSettings(data);
     } catch (error) {
       console.error('Failed to load settings:', error);
-      alert('Failed to load settings');
+      toast.error('Failed to load settings');
     } finally {
       setLoading(false);
     }
@@ -27,12 +27,22 @@ const Settings: React.FC = () => {
 
   const handleUpdateSetting = async (key: string, value: string) => {
     try {
-      await electronAPI.updateSetting({ key, value });
+      await window.api.settings.set(key, value);
       await loadSettings();
-      alert('Setting updated successfully!');
+      toast.success('Setting updated successfully!');
     } catch (error) {
       console.error('Failed to update setting:', error);
-      alert('Failed to update setting');
+      toast.error('Failed to update setting');
+    }
+  };
+
+  const handleBackup = async () => {
+    try {
+      const saved = await window.api.backup();
+      if (saved) toast.success('Backup saved!');
+    } catch (error) {
+      console.error('Backup failed:', error);
+      toast.error('Backup failed');
     }
   };
 
@@ -59,7 +69,7 @@ const Settings: React.FC = () => {
       <div className="page-header">
         <h1>Settings</h1>
         <div className="page-actions">
-          <Button variant="primary" onClick={() => {/* Backup data */}}>
+          <Button variant="primary" onClick={handleBackup}>
             Backup Data
           </Button>
           <Button variant="outline" onClick={() => {/* Restore data */}}>

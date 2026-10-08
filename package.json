@@ -2,14 +2,17 @@
   "name": "library-workspace-manager",
   "version": "1.0.0",
   "description": "Library Workspace Management System",
+  "author": "Library Workspace",
+  "license": "UNLICENSED",
+  "private": true,
   "main": "dist/main/main.js",
   "scripts": {
     "dev": "tsc -p tsconfig.main.json && concurrently -k \"tsc -p tsconfig.main.json -w\" \"vite\" \"wait-on tcp:5173 && electron .\"",
     "build": "npm run build:main && npm run build:renderer",
     "build:main": "echo \"Running tsc...\" && tsc -p tsconfig.main.json --version && tsc -p tsconfig.main.json && echo \"tsc completed\"",
     "build:renderer": "vite build",
-    "dist": "npm run build && electron-builder",
-    "dist:win": "npm run build && electron-builder --win"
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never"
   },
   "dependencies": {
     "better-sqlite3": "^9.4.3",
@@ -45,6 +48,7 @@
       "package.json"
     ],
     "win": {
+      "icon": "assets/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -59,7 +63,8 @@
       "perMachine": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Library Workspace"
+      "shortcutName": "Library Workspace",
+      "artifactName": "Library Workspace Manager Setup ${version}.${ext}"
     }
   }
 }
