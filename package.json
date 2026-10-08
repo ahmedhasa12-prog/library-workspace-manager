@@ -1,0 +1,52 @@
+{
+  "name": "library-workspace-manager",
+  "version": "1.0.0",
+  "description": "Library Workspace Management System",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "tsc -p tsconfig.main.json && concurrently -k \"tsc -p tsconfig.main.json -w\" \"vite\" \"wait-on tcp:5173 && electron .\"",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.372.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.23.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.10",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "electron": "^29.1.6",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.library.workspace",
+    "productName": "Library Workspace Manager",
+    "directories": { "output": "dist-electron" },
+    "files": ["dist/main/**/*", "dist/renderer/**/*", "package.json"],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Library Workspace"
+    }
+  }
+}

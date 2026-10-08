@@ -1,0 +1,63 @@
+# Node.js modules
+node_modules/
+
+# Build outputs
+dist/
+dist-electron/
+build/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# TypeScript cache
+.tsbuildinfo
+
+# Electron rebuild
+node_modules/.cache
+
+# Misc
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+pnpm-lock.json
+
+# Test coverage
+coverage/
+.lcov*
+
+# Build artifacts
+*.exe
+*.zip
+*.dmg
+*.blockmap
+*.nsis.manifest
+*.nsis.*exeinit-db.js
+
+init-db.js
