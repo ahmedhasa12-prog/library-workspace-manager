@@ -1,4 +1,4 @@
-import { ipcMain, dialog, app } from 'electron';
+import { ipcMain, dialog, app, BrowserWindow } from 'electron';
 import * as fs from 'fs';
 import { getDb, getDbPath } from './db';
 import { addDays, addMonths, format } from 'date-fns';
