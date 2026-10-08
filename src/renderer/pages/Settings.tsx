@@ -71,66 +71,70 @@ const Settings: React.FC = () => {
       {loading ? (
         <div className="loading">Loading settings...</div>
       ) : (
-        <div className="settings-grid">
-          <div className="settings-section">
-            <h2>General Settings</h2>
-            <div className="settings-list">
-              {Object.entries(settings).map(([key, value]) => (
-                <div key={key} className="setting-item">
-                  <div className="setting-info">
-                    <h3>{key.replace(/_/g, ' ').toUpperCase()}</h3>
-                    <p className="setting-description">
-                      Configure {key.replace(/_/g, ' ')} for the library workspace
-                    </p>
-                  </div>
-                  {editedKey === key ? (
-                    <div className="setting-edit">
-                      <input
-                        type="text"
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        placeholder="Enter new value"
-                        className="setting-input"
-                      />
-                      <div className="setting-actions">
-                        <Button 
-                          variant="primary" 
-                          onClick={handleSaveSetting}
-                        >
-                          Save
-                        </Button>
-                        <Button 
-                          variant="secondary" 
-                          onClick={handleCancelEdit}
-                        >
-                          Cancel
-                        </Button>
+        <div>
+          <div>
+            <div className="settings-grid">
+              <div className="settings-section">
+                <h2>General Settings</h2>
+                <div className="settings-list">
+                  {Object.entries(settings).map(([key, value]) => (
+                    <div key={key} className="setting-item">
+                      <div className="setting-info">
+                        <h3>{key.replace(/_/g, ' ').toUpperCase()}</h3>
+                        <p className="setting-description">
+                          Configure {key.replace(/_/g, ' ')} for the library workspace
+                        </p>
                       </div>
+                      {editedKey === key ? (
+                        <div className="setting-edit">
+                          <input
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            placeholder="Enter new value"
+                            className="setting-input"
+                          />
+                          <div className="setting-actions">
+                            <Button 
+                              variant="primary" 
+                              onClick={handleSaveSetting}
+                            >
+                              Save
+                            </Button>
+                            <Button 
+                              variant="secondary" 
+                              onClick={handleCancelEdit}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="setting-value">
+                          <span className="value-label">Current Value:</span>
+                          <span className="value-text">{value}</span>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="small" 
+                          onClick={() => handleEditSetting(key)}
+                        >
+                          Edit
+                        </Button>
+                      )}
                     </div>
-                  ) : (
-                    <div className="setting-value">
-                      <span className="value-label">Current Value:</span>
-                      <span className="value-text">{value}</span>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="small"
-                      onClick={() => handleEditSetting(key)}
-                    >
-                      Edit
-                    </Button>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className="settings-section">
-            <h2>Database Information</h2>
-            <div className="db-info">
-              <p><strong>Database File:</strong> library.db</p>
-              <p><strong>Location:</strong> Application directory</p>
-              <p><strong>Last Backup:</strong> Never (consider backing up regularly)</p>
+              </div>
+              
+              <div className="settings-section">
+                <h2>Database Information</h2>
+                <div className="db-info">
+                  <p><strong>Database File:</strong> library.db</p>
+                  <p><strong>Location:</strong> Application directory</p>
+                  <p><strong>Last Backup:</strong> Never (consider backing up regularly)</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
