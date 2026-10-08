@@ -57,7 +57,7 @@ const Settings: React.FC = () => {
   return (
     <div className="settings-page">
       <div className="page-header">
-        <h1>Settings</h2>
+        <h1>Settings</h1>
         <div className="page-actions">
           <Button variant="primary" onClick={() => {/* Backup data */}}>
             Backup Data
