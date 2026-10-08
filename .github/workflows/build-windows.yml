@@ -28,12 +28,7 @@ jobs:
       run: dir
       
     - name: Check for package-lock.json
-      run: |
-        if exist package-lock.json (
-          echo package-lock.json found
-        ) else (
-          echo package-lock.json NOT found
-        )
+      run: if exist package-lock.json (echo package-lock.json found) else (echo package-lock.json NOT found)
       
     - name: Check package.json
       run: type package.json
