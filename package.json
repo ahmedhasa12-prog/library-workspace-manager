@@ -31,15 +31,29 @@
     "electron-builder": "^24.13.3",
     "typescript": "^5.4.5",
     "vite": "^5.2.8",
-    "wait-on": "^7.2.0"
+    "wait-on": "^7.2.0",
+    "@types/electron": "^29.1.6"
   },
   "build": {
     "appId": "com.library.workspace",
     "productName": "Library Workspace Manager",
-    "directories": { "output": "dist-electron" },
-    "files": ["dist/main/**/*", "dist/renderer/**/*", "package.json"],
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/main/**/*",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }]
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "nsis": {
       "oneClick": true,
