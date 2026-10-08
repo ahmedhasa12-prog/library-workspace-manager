@@ -1,0 +1,33 @@
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  build:
+    runs-on: windows-latest  # Uses Windows Server 2022 with Desktop Experience
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'  # LTS version
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build Windows installer
+      run: npm run dist:win
+      
+    - name: Upload installer artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: library-workspace-manager-installer
+        path: dist-electron/**/Library Workspace Manager Setup *.exe
+        retention-days: 30  # Keep artifacts for 30 days
