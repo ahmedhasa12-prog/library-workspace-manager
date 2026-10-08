@@ -31,7 +31,6 @@ jobs:
       run: |
         if exist package-lock.json (
           echo package-lock.json found
-          type package-lock.json | head -5
         ) else (
           echo package-lock.json NOT found
         )
