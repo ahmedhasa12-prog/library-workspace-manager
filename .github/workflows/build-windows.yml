@@ -25,19 +25,19 @@ jobs:
         echo "npm version: $(npm -v)"
         
     - name: List files
-      run: ls -la
+      run: dir
       
     - name: Check for package-lock.json
       run: |
-        if [ -f package-lock.json ]; then
-          echo "package-lock.json found"
-          head -5 package-lock.json
-        else
-          echo "package-lock.json NOT found"
-        fi
+        if exist package-lock.json (
+          echo package-lock.json found
+          type package-lock.json | head -5
+        ) else (
+          echo package-lock.json NOT found
+        )
       
     - name: Check package.json
-      run: cat package.json
+      run: type package.json
       
     - name: Install dependencies
       run: npm install
@@ -50,10 +50,19 @@ jobs:
       
     - name: Check if build succeeded
       run: |
-        echo "Checking dist-electron folder:"
-        ls -la dist-electron/ || echo "dist-electron folder not found"
-        echo "Looking for installer:"
-        find dist-electron -name "*.exe" -type f || echo "No exe files found"
+        echo Checking dist-electron folder:
+        if exist dist-electron (
+          dir dist-electron
+        ) else (
+          echo dist-electron folder not found
+        )
+        echo Looking for installer:
+        for /f %%I in ('dir dist-electron\*.exe /b 2^>nul') do (
+          echo Found installer: %%I
+          goto :found
+        )
+        echo No exe files found
+        :found
         
     - name: Upload installer artifact
       uses: actions/upload-artifact@v4
