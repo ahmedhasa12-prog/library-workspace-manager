@@ -31,7 +31,7 @@ jobs:
       run: cat package.json
       
     - name: Install dependencies
-      run: npm ci
+      run: npm install
       
     - name: Rebuild native modules (if needed)
       run: npm rebuild better-sqlite3 || echo "Rebuild failed or not needed"
