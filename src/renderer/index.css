@@ -93,7 +93,9 @@ body {
 .btn-green { background: var(--green); color: #fff; }
 .btn-red { background: var(--red); color: #fff; }
 .btn-outline { background: #fff; border-color: var(--border); color: var(--ink); }
+.btn-secondary { background: var(--muted); color: #fff; }
 .btn-sm { padding: 6px 11px; font-size: 13px; }
+.btn-lg { padding: 12px 24px; font-size: 16px; }
 .btn-block { width: 100%; }
 
 /* Forms */
