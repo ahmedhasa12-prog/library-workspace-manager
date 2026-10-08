@@ -17,7 +17,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'  # LTS version
-        cache: 'npm'
+        # Disable cache to avoid lock file issues
+        cache: 'none'
         
     - name: Check Node and npm versions
       run: |
@@ -26,6 +27,15 @@ jobs:
         
     - name: List files
       run: ls -la
+      
+    - name: Check for package-lock.json
+      run: |
+        if [ -f package-lock.json ]; then
+          echo "package-lock.json found"
+          head -5 package-lock.json
+        else
+          echo "package-lock.json NOT found"
+        fi
       
     - name: Check package.json
       run: cat package.json
