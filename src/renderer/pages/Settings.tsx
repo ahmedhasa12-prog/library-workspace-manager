@@ -57,7 +57,7 @@ const Settings: React.FC = () => {
   return (
     <div className="settings-page">
       <div className="page-header">
-        <h1>Settings</h1>
+        <h1>Settings</h2>
         <div className="page-actions">
           <Button variant="primary" onClick={() => {/* Backup data */}}>
             Backup Data
@@ -110,17 +110,19 @@ const Settings: React.FC = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="setting-value">
-                          <span className="value-label">Current Value:</span>
-                          <span className="value-text">{value}</span>
+                        <div>
+                          <div className="setting-value">
+                            <span className="value-label">Current Value:</span>
+                            <span className="value-text">{value}</span>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="small" 
+                            onClick={() => handleEditSetting(key)}
+                          >
+                            Edit
+                          </Button>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="small" 
-                          onClick={() => handleEditSetting(key)}
-                        >
-                          Edit
-                        </Button>
                       )}
                     </div>
                   ))}
